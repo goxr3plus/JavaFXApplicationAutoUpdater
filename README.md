@@ -15,6 +15,10 @@
 
  The Updater downloads this zip folder , extracts it and after that it starts the main application which is XR3Player.
 
+# So what ?
+
+  **You can use it for your own Java or any kind of application to do the same just by changing a few parameters !!!!!!!!!!!!**
+
 # !Please watch the Youtube Tutorial i will upload so you completely understand how to use it !
 
 
