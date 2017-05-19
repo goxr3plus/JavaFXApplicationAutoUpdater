@@ -56,6 +56,8 @@ public class DownloadModeController extends BorderPane {
 		
 	}
 	
+	
+	
 	public ProgressIndicator getProgressBar() {
 		return progressBar;
 	}

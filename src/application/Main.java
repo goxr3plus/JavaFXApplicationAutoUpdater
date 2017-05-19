@@ -30,31 +30,36 @@ public class Main extends Application {
 	
 	/** The Window of the Application */
 	private static Stage window;
+	
 	/**
 	 * The root of the Application is a StackPane [ Because in future updates i
 	 * might add multiple screen layers]
 	 */
 	private static StackPane applicationStackPane = new StackPane();
 	
+	//--------
+	
 	/**
 	 * This is the folder where the update will take place [ obviously the
 	 * parent folder of the application]
 	 */
-	File updateFolder = new File(InfoTool.getBasePathForClass(Main.class));
+	private File updateFolder = new File(InfoTool.getBasePathForClass(Main.class));
 	
 	/**
 	 * The update will be downloaded as a zip folder , this is the prefix name
 	 * of the zip folder
 	 */
-	String foldersNamePrefix;
+	private static String foldersNamePrefix;
 	
-	//The Update to download
-	int update;
+	/**
+	 * Number of update to be downloaded
+	 */
+	private int update;
 	
 	/**
 	 * The name of the application you want to update
 	 */
-	static String applicationName = "XR3Player";
+	private static String applicationName = "XR3Player";
 	
 	//--------------------
 	
@@ -72,7 +77,7 @@ public class Main extends Application {
 	/**
 	 * The Main Mode of the Application
 	 */
-	public static DownloadModeController downloadMode = new DownloadModeController();
+	private static DownloadModeController downloadMode = new DownloadModeController();
 	
 	//---------------------------------------------------------------------
 	
@@ -85,9 +90,11 @@ public class Main extends Application {
 		if (!applicationParameters.isEmpty())
 			update = Integer.valueOf(applicationParameters.get(0));
 		else {
-			System.out.println("No Parameters given... Application exiting..");
+			System.out.println("No Parameters given... Application exiting...");
 			System.exit(0);
 		}
+		
+		System.out.println("XR3PlayerUpdater Application Started");
 		
 		//AppliationStackPane
 		applicationStackPane.getChildren().add(downloadMode);
@@ -100,8 +107,14 @@ public class Main extends Application {
 		window.getIcons().add(InfoTool.getImageFromResourcesFolder("icon.png"));
 		window.centerOnScreen();
 		window.setOnCloseRequest(exit -> {
-			exit.consume();
-			System.exit(0);
+			if (ActionTool.doQuestion("Soore you want to exit " + applicationName + " Updater?", window)) {
+				
+				//Delete the ZIP Folder
+				boolean zipDeleted = new File(foldersNamePrefix + ".zip").delete();
+				
+				System.exit(0);
+			} else
+				exit.consume();
 		});
 		
 		// Scene
@@ -217,9 +230,6 @@ public class Main extends Application {
 	 */
 	private void packageUpdate() {
 		
-		//Delete the ZIP Folder
-		boolean zipDeleted = new File(foldersNamePrefix + ".zip").delete();
-		
 		//Remove Listeners
 		downloadMode.getProgressBar().progressProperty().removeListener(listener2);
 		
@@ -231,10 +241,15 @@ public class Main extends Application {
 		downloadMode.getProgressBar().setProgress(-1);
 		downloadMode.getProgressLabel().setText("Starting " + applicationName + "...");
 		
-		//Start the XR3Player
+		//Delete the ZIP Folder
+		boolean zipDeleted = new File(foldersNamePrefix + ".zip").delete();
+		
+		//Start XR3Player
 		startTheApplication();
 		
 	}
+	
+	//---------------------------------------------------------------------------------------
 	
 	/**
 	 * Calling this method to start the main Application which is XR3Player
@@ -253,6 +268,10 @@ public class Main extends Application {
 					NotificationType.INFORMATION));
 			
 			try {
+				
+				//Delete the ZIP Folder
+				boolean zipDeleted = new File(foldersNamePrefix + ".zip").delete();
+				
 				//------------Wait until XR3Player is created
 				File XR3Player = new File(applicationPath[0]);
 				while (!XR3Player.exists()) {
