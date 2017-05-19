@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.RadialGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.shape.Rectangle?>
+
+<fx:root stylesheets="@../style/application.css" type="BorderPane" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <StackPane prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <Rectangle fx:id="rectangle" arcHeight="5.0" arcWidth="5.0" height="175.0" stroke="BLACK" strokeType="INSIDE" width="409.0">
+               <fill>
+                  <RadialGradient centerX="0.5" centerY="0.6857142857142857" focusAngle="90.0" focusDistance="-0.627906976744186" radius="0.1511627906976744">
+                     <stops>
+                        <Stop color="BLACK" />
+                        <Stop color="#1f1f1fd9" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </fill>
+            </Rectangle>
+            <VBox alignment="CENTER" spacing="18.0">
+               <children>
+                  <ProgressIndicator fx:id="progressBar" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="127.0" prefWidth="171.0" progress="0.0" />
+                  <Label fx:id="progressLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="404.0" prefHeight="26.0" prefWidth="404.0" style="-fx-background-color: #202020; -fx-border-color: transparent; -fx-text-fill: white; -fx-font-size: 15; -fx-font-weight: bold;" text="Update Screen" textAlignment="CENTER" />
+               </children>
+            </VBox>
+         </children>
+      </StackPane>
+   </center>
+</fx:root>
