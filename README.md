@@ -8,12 +8,15 @@
 
  
 
-#How it works?
+# How it works?
 
  Basically i have written this code for an application called XR3Player[You can find it in my repositories].
  Every once a while i am releasing an update for XR3Player in the format of a zip folder called for example [XR3Player Update 70.zip]
 
  The Updater downloads this zip folder , extracts it and after that it starts the main application which is XR3Player.
 
-#Please watch the Youtube Tutorial i will upload so you completely understand how to use it 
+# !Please watch the Youtube Tutorial i will upload so you completely understand how to use it !
+
+
+ Here i will upload the video tutorial
 
