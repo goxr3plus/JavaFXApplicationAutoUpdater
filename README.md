@@ -19,7 +19,7 @@
 
   **You can use it for your own Java or any kind of application to do the same just by changing a few parameters !!!!!!!!!!!!**
 
-# !Please watch the Youtube Tutorial i will upload so you completely understand how to use it !
+# Youtube Tutorials
 
 [![Youtube Tutorial](http://img.youtube.com/vi/Xo9BB8OVpL0/0.jpg)](https://www.youtube.com/watch?v=xdXyajYWMBQ&index=1&list=PL-xqaiRUr_iSKPRiMqdHMAEiewdirjag-)
 
