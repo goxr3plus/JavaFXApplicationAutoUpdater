@@ -21,5 +21,5 @@
 
 # !Please watch the Youtube Tutorial i will upload so you completely understand how to use it !
 
-[![Youtube Tutorial](http://img.youtube.com/vi/-QeyBA0J5cI/0.jpg)](https://www.youtube.com/watch?v=xdXyajYWMBQ&index=1&list=PL-xqaiRUr_iSKPRiMqdHMAEiewdirjag-)
+[![Youtube Tutorial](http://img.youtube.com/vi/Xo9BB8OVpL0/0.jpg)](https://www.youtube.com/watch?v=xdXyajYWMBQ&index=1&list=PL-xqaiRUr_iSKPRiMqdHMAEiewdirjag-)
 
