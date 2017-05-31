@@ -21,8 +21,7 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
 /**
- * JavaFX Service which is Capable of Downloading Files from the Internet to the
- * LocalHost
+ * JavaFX Service which is Capable of Downloading Files from the Internet to the LocalHost
  * 
  * @author GOXR3PLUS
  *
@@ -82,6 +81,7 @@ public class DownloadService extends Service<Boolean> {
 				
 				//Update the message
 				super.updateMessage("Connecting with Server");
+				String failMessage;
 				
 				try {
 					
@@ -166,6 +166,7 @@ public class DownloadService extends Service<Boolean> {
 					// Stop the External Thread which is updating the %100 progress
 					stopThread = true;
 					logger.log(Level.WARNING, "DownloadService failed", ex);
+					failMessage = ex.getMessage();
 				}
 				
 				//-------------------------------------------------------Finally-------------------------------------------------------------------------------
@@ -184,6 +185,10 @@ public class DownloadService extends Service<Boolean> {
 						Thread.sleep(50);
 					}
 				}
+				
+				//Check if failed && Update the message
+				if (!succeeded)
+					super.updateMessage("Failed..." + ( InfoTool.isReachableByPing("www.google.com") ? "" : "No internet Connection" ) + " , please exit...");
 				
 				System.out
 						.println("\n ->Download Service exited:[Value=" + succeeded + "]" + " Copy Thread is Alive? " + ( copyThread == null ? "" : copyThread.isAlive() + "\n" ));
@@ -213,8 +218,7 @@ public class DownloadService extends Service<Boolean> {
 	}
 	
 	/**
-	 * Start the Download Service
-	 * [[SuppressWarningsSpartan]]
+	 * Start the Download Service [[SuppressWarningsSpartan]]
 	 */
 	public void startDownload(URL remoteResourceLocation , Path pathToLocalResource) {
 		//!Running and Report null

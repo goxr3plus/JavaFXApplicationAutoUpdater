@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import application.Main;
 import application.tools.InfoTool;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Region;
 import javafx.scene.shape.Rectangle;
 
 public class DownloadModeController extends BorderPane {
@@ -24,6 +27,12 @@ public class DownloadModeController extends BorderPane {
 	
 	@FXML
 	private Label progressLabel;
+	
+	@FXML
+	private Region region;
+	
+	@FXML
+	private Button tryAgainButton;
 	
 	// -------------------------------------------------------------
 	
@@ -54,9 +63,16 @@ public class DownloadModeController extends BorderPane {
 	@FXML
 	private void initialize() {
 		
+		//-- region
+		region.setVisible(false);
+		
+		//-- tryAgainButton
+		tryAgainButton.visibleProperty().bind(region.visibleProperty());
+		tryAgainButton.setOnAction(a -> {
+			Main.restartApplication("XR3PlayerUpdater");
+			tryAgainButton.setDisable(true);
+		});
 	}
-	
-	
 	
 	public ProgressIndicator getProgressBar() {
 		return progressBar;
@@ -64,6 +80,13 @@ public class DownloadModeController extends BorderPane {
 	
 	public Label getProgressLabel() {
 		return progressLabel;
+	}
+	
+	/**
+	 * @return the region
+	 */
+	public Region getRegion() {
+		return region;
 	}
 	
 }

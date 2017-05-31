@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.RadialGradient?>
@@ -29,6 +32,12 @@
                   <Label fx:id="progressLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="404.0" prefHeight="26.0" prefWidth="404.0" style="-fx-background-color: #202020; -fx-border-color: transparent; -fx-text-fill: white; -fx-font-size: 15; -fx-font-weight: bold;" text="Update Screen" textAlignment="CENTER" />
                </children>
             </VBox>
+            <Region fx:id="region" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: rgb(255,255,255,0.8);" />
+            <Button fx:id="tryAgainButton" mnemonicParsing="false" prefHeight="58.0" prefWidth="109.0" text="Try again">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
          </children>
       </StackPane>
    </center>

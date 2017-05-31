@@ -22,46 +22,28 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class Main extends Application {
 	
-	/** The Window of the Application */
-	private static Stage window;
+	//================Variables================
 	
-	/**
-	 * The root of the Application is a StackPane [ Because in future updates i
-	 * might add multiple screen layers]
-	 */
-	private static StackPane applicationStackPane = new StackPane();
-	
-	//--------
-	
-	/**
-	 * This is the folder where the update will take place [ obviously the
-	 * parent folder of the application]
-	 */
+	/** This is the folder where the update will take place [ obviously the parent folder of the application] */
 	private File updateFolder = new File(InfoTool.getBasePathForClass(Main.class));
 	
 	/**
-	 * The update will be downloaded as a zip folder , this is the prefix name
-	 * of the zip folder
+	 * Download update as a ZIP Folder , this is the prefix name of the ZIP folder
 	 */
 	private static String foldersNamePrefix;
 	
-	/**
-	 * Number of update to be downloaded
-	 */
-	private int update;
+	/** Update to download */
+	private static int update;
 	
-	/**
-	 * The name of the application you want to update
-	 */
-	private static String applicationName = "XR3Player";
+	/** The name of the application you want to update */
+	private String applicationName;
 	
-	//--------------------
+	//================Listeners================
 	
 	//Create a change listener
 	ChangeListener<? super Number> listener = (observable , oldValue , newValue) -> {
@@ -74,9 +56,14 @@ public class Main extends Application {
 			packageUpdate();
 	};
 	
-	/**
-	 * The Main Mode of the Application
-	 */
+	//================Services================
+	
+	DownloadService downloadService;
+	ExportZipService exportZipService;
+	
+	//=============================================
+	
+	private Stage window;
 	private static DownloadModeController downloadMode = new DownloadModeController();
 	
 	//---------------------------------------------------------------------
@@ -84,53 +71,78 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		
-		//Check the application parameters
-		//I want one parameter -> for example [45] which is the update i want
+		//Parse Arguments -> I want one parameter -> for example [45] which is the update i want
 		List<String> applicationParameters = super.getParameters().getRaw();
 		if (!applicationParameters.isEmpty())
 			update = Integer.valueOf(applicationParameters.get(0));
 		else {
-			System.out.println("No Parameters given... Application exiting...");
+			System.out.println("No arguments given...\nApplication exit.");
 			System.exit(0);
 		}
 		
+		//We need this in order to restart the update when it fails
 		System.out.println("XR3PlayerUpdater Application Started");
-		
-		//AppliationStackPane
-		applicationStackPane.getChildren().add(downloadMode);
 		
 		// --------Window---------
 		window = primaryStage;
-		window.setTitle(applicationName + " Updater");
 		window.setResizable(false);
 		window.centerOnScreen();
 		window.getIcons().add(InfoTool.getImageFromResourcesFolder("icon.png"));
 		window.centerOnScreen();
 		window.setOnCloseRequest(exit -> {
-			if (ActionTool.doQuestion("Soore you want to exit " + applicationName + " Updater?", window)) {
+			
+			//Check
+			if (exportZipService != null && exportZipService.isRunning()) {
+				ActionTool.showNotification("Message", "Can not exit right now cause it will corrupt the update", Duration.seconds(5), NotificationType.WARNING);
+				exit.consume();
+				return;
+			}
+			
+			//Question
+			if (!ActionTool.doQuestion("Soore you want to exit " + applicationName + " Updater?", window))
+				exit.consume();
+			else {
 				
 				//Delete the ZIP Folder
-				boolean zipDeleted = new File(foldersNamePrefix + ".zip").delete();
+				deleteZipFolder();
 				
+				//Exit the application
 				System.exit(0);
-			} else
-				exit.consume();
+			}
+			
 		});
 		
 		// Scene
-		Scene scene = new Scene(applicationStackPane);
+		Scene scene = new Scene(downloadMode);
 		scene.getStylesheets().add(getClass().getResource(InfoTool.STYLES + InfoTool.APPLICATIONCSS).toExternalForm());
 		window.setScene(scene);
 		
 		//Show
 		window.show();
 		
-		//Update		
+		//Start
+		prepareForUpdate("XR3Player");
+	}
+	
+	//-------------------------------------------------------------------------------------------------------------------------------
+	
+	/**
+	 * Prepare for the Update
+	 * 
+	 * @param applicationName
+	 */
+	public void prepareForUpdate(String applicationName) {
+		this.applicationName = applicationName;
+		window.setTitle(applicationName + " Updater");
+		
+		//FoldersNamePrefix	
 		foldersNamePrefix = updateFolder.getAbsolutePath() + File.separator + applicationName + " Update Package " + update;
 		
-		if (checkPermissions())
-			downloadUpdate();
-		else {
+		//Check the Permissions
+		if (checkPermissions()) {
+			downloadMode.getProgressLabel().setText("Checking permissions");
+			downloadUpdate("https://github.com/goxr3plus/XR3Player/releases/download/V3." + update + "/XR3Player.Update." + update + ".zip");
+		} else {
 			
 			//Update
 			downloadMode.getProgressBar().setProgress(-1);
@@ -144,19 +156,14 @@ public class Main extends Application {
 		}
 	}
 	
-	/**
-	 * In order to update this application must have READ,WRITE AND CREATE
-	 * permissions on the current folder
-	 */
+	/** In order to update this application must have READ,WRITE AND CREATE permissions on the current folder */
 	public boolean checkPermissions() {
 		
 		//Check for permission to Create
 		try {
 			File sample = new File(updateFolder.getAbsolutePath() + File.separator + "empty123123124122354345436.txt");
 			/*
-			 * Create and delete a dummy file in order to check file
-			 * permissions. Maybe
-			 * there is a safer way for this check.
+			 * Create and delete a dummy file in order to check file permissions. Maybe there is a safer way for this check.
 			 */
 			sample.createNewFile();
 			sample.delete();
@@ -169,29 +176,32 @@ public class Main extends Application {
 		return updateFolder.canRead() && updateFolder.canWrite();
 	}
 	
-	/**
-	 * Try to download the XR3Player Update
-	 */
-	private void downloadUpdate() {
+	/** Try to download the Update */
+	private void downloadUpdate(String downloadURL) {
 		
 		if (InfoTool.isReachableByPing("www.google.com")) {
 			
 			//Download it
 			try {
 				//Delete the ZIP Folder
-				boolean zipDeleted = new File(foldersNamePrefix + ".zip").delete();
+				deleteZipFolder();
 				
 				//Create the downloadService
-				DownloadService downloadService = new DownloadService();
+				downloadService = new DownloadService();
 				
 				//Add Bindings
 				downloadMode.getProgressBar().progressProperty().bind(downloadService.progressProperty());
 				downloadMode.getProgressLabel().textProperty().bind(downloadService.messageProperty());
+				downloadMode.getProgressLabel().textProperty().addListener((observable , oldValue , newValue) -> {
+					//Give try again option to the user
+					if (newValue.toLowerCase().contains("failed"))
+						downloadMode.getRegion().setVisible(true);
+				});
 				downloadMode.getProgressBar().progressProperty().addListener(listener);
+				window.setTitle("Downloading ( " + this.applicationName + " ) Update -> " + this.update);
 				
 				//Start
-				downloadService.startDownload(new URL("https://github.com/goxr3plus/XR3Player/releases/download/V3." + update + "/XR3Player.Update." + update + ".zip"),
-						Paths.get(foldersNamePrefix + ".zip"));
+				downloadService.startDownload(new URL(downloadURL), Paths.get(foldersNamePrefix + ".zip"));
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			}
@@ -199,17 +209,21 @@ public class Main extends Application {
 		} else {
 			//Update
 			downloadMode.getProgressBar().setProgress(-1);
-			downloadMode.getProgressLabel().setText("No internet Connection");
+			downloadMode.getProgressLabel().setText("No internet Connection,please exit...");
+			
+			//Delete the ZIP Folder
+			deleteZipFolder();
+			
+			//Give try again option to the user
+			downloadMode.getRegion().setVisible(true);
 		}
 	}
 	
-	/**
-	 * Exports the Update ZIP Folder
-	 */
+	/** Exports the Update ZIP Folder */
 	private void exportUpdate() {
 		
 		//Create the ExportZipService
-		ExportZipService exportZipService = new ExportZipService();
+		exportZipService = new ExportZipService();
 		
 		//Remove Listeners
 		downloadMode.getProgressBar().progressProperty().removeListener(listener);
@@ -224,10 +238,7 @@ public class Main extends Application {
 		
 	}
 	
-	/**
-	 * After the exporting has been done i must delete the old update files and
-	 * add the new ones
-	 */
+	/** After the exporting has been done i must delete the old update files and add the new ones */
 	private void packageUpdate() {
 		
 		//Remove Listeners
@@ -242,54 +253,51 @@ public class Main extends Application {
 		downloadMode.getProgressLabel().setText("Starting " + applicationName + "...");
 		
 		//Delete the ZIP Folder
-		boolean zipDeleted = new File(foldersNamePrefix + ".zip").delete();
+		deleteZipFolder();
 		
 		//Start XR3Player
-		startTheApplication();
+		restartApplication(applicationName);
 		
 	}
 	
 	//---------------------------------------------------------------------------------------
 	
-	/**
-	 * Calling this method to start the main Application which is XR3Player
-	 * 
-	 */
-	public static void startTheApplication() {
+	/** Calling this method to start the main Application which is XR3Player */
+	public static void restartApplication(String appName) {
 		
 		// Restart XR3Player
 		new Thread(() -> {
 			String path = InfoTool.getBasePathForClass(Main.class);
-			String[] applicationPath = { new File(path + applicationName + ".jar").getAbsolutePath() };
+			String[] applicationPath = { new File(path + appName + ".jar").getAbsolutePath() };
 			
 			//Show message that application is restarting
-			Platform.runLater(() -> ActionTool.showNotification("Starting " + applicationName,
+			Platform.runLater(() -> ActionTool.showNotification("Starting " + appName,
 					"Application Path:[ " + applicationPath[0] + " ]\n\tIf this takes more than 10 seconds either the computer is slow or it has failed....", Duration.seconds(25),
 					NotificationType.INFORMATION));
 			
 			try {
 				
 				//Delete the ZIP Folder
-				boolean zipDeleted = new File(foldersNamePrefix + ".zip").delete();
+				deleteZipFolder();
 				
-				//------------Wait until XR3Player is created
-				File XR3Player = new File(applicationPath[0]);
-				while (!XR3Player.exists()) {
+				//------------Wait until Application is created
+				File applicationFile = new File(applicationPath[0]);
+				while (!applicationFile.exists()) {
 					Thread.sleep(50);
-					System.out.println("Waiting " + applicationName + " Jar to be created...");
+					System.out.println("Waiting " + appName + " Jar to be created...");
 				}
 				
-				System.out.println(applicationName + " Path is : " + applicationPath[0]);
+				System.out.println(appName + " Path is : " + applicationPath[0]);
 				
 				//Create a process builder
-				ProcessBuilder builder = new ProcessBuilder("java", "-jar", applicationPath[0]);
+				ProcessBuilder builder = new ProcessBuilder("java", "-jar", applicationPath[0], !"XR3PlayerUpdater".equals(appName) ? "" : String.valueOf(update));
 				builder.redirectErrorStream(true);
 				Process process = builder.start();
 				BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 				
 				// Wait n seconds
 				PauseTransition pause = new PauseTransition(Duration.seconds(10));
-				pause.setOnFinished(f -> Platform.runLater(() -> ActionTool.showNotification("Starting " + applicationName + " failed",
+				pause.setOnFinished(f -> Platform.runLater(() -> ActionTool.showNotification("Starting " + appName + " failed",
 						"\nApplication Path: [ " + applicationPath[0] + " ]\n\tTry to do it manually...", Duration.seconds(10), NotificationType.ERROR)));
 				pause.play();
 				
@@ -299,7 +307,7 @@ public class Main extends Application {
 					while ( ( line = bufferedReader.readLine() ) != null) {
 						if (line.isEmpty())
 							break;
-						if (line.contains(applicationName + " Application Started"))
+						if (line.contains(appName + " Application Started"))
 							System.exit(0);
 					}
 				
@@ -307,11 +315,20 @@ public class Main extends Application {
 				Logger.getLogger(Main.class.getName()).log(Level.INFO, null, ex);
 				
 				// Show failed message
-				Platform.runLater(() -> Platform.runLater(() -> ActionTool.showNotification("Starting " + applicationName + " failed",
+				Platform.runLater(() -> Platform.runLater(() -> ActionTool.showNotification("Starting " + appName + " failed",
 						"\nApplication Path: [ " + applicationPath[0] + " ]\n\tTry to do it manually...", Duration.seconds(10), NotificationType.ERROR)));
 				
 			}
-		}, "Start XR3Application Thread").start();
+		}, "Start Application Thread").start();
+	}
+	
+	/**
+	 * Delete the ZIP folder from the update
+	 * 
+	 * @return True if deleted , false if not
+	 */
+	public static boolean deleteZipFolder() {
+		return new File(foldersNamePrefix + ".zip").delete();
 	}
 	
 	public static void main(String[] args) {
