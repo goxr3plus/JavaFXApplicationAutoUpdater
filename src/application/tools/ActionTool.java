@@ -3,8 +3,11 @@
  */
 package application.tools;
 
+import java.awt.Desktop;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -32,6 +35,31 @@ public final class ActionTool {
 	private static final Logger logger = Logger.getLogger(ActionTool.class.getName());
 	
 	/**
+	 * Tries to open that URI on the default browser
+	 * 
+	 * @param uri
+	 * @return <b>True</b> if succeeded , <b>False</b> if not
+	 */
+	public static boolean openWebSite(String uri) {
+		
+		try {
+			//Check if Desktop is supported
+			if (!Desktop.isDesktopSupported()) {
+				ActionTool.showNotification("Problem Occured", "Can't open default web browser at:\n[" + uri + " ]", Duration.millis(2500), NotificationType.INFORMATION);
+				return false;
+			}
+			
+			ActionTool.showNotification("Opening WebSite", "Opening on default Web Browser :\n" + uri, Duration.millis(1500), NotificationType.INFORMATION);
+			Desktop.getDesktop().browse(new URI(uri));
+		} catch (IOException | URISyntaxException ex) {
+			ActionTool.showNotification("Problem Occured", "Can't open default web browser at:\n[" + uri + " ]", Duration.millis(2500), NotificationType.INFORMATION);
+			logger.log(Level.INFO, "", ex);
+			return false;
+		}
+		return true;
+	}
+	
+	/**
 	 * Private Constructor.
 	 */
 	private ActionTool() {
@@ -41,9 +69,9 @@ public final class ActionTool {
 	 * Copy a file from source to destination.
 	 *
 	 * @param source
-	 *        the source
+	 *            the source
 	 * @param destination
-	 *        the destination
+	 *            the destination
 	 * @return True if succeeded , False if not
 	 */
 	public static boolean copy(InputStream source , String destination) {
@@ -65,13 +93,13 @@ public final class ActionTool {
 	 * Show a notification.
 	 *
 	 * @param title
-	 *        The notification title
+	 *            The notification title
 	 * @param text
-	 *        The notification text
+	 *            The notification text
 	 * @param d
-	 *        The duration that notification will be visible
+	 *            The duration that notification will be visible
 	 * @param t
-	 *        The notification type
+	 *            The notification type
 	 */
 	public static void showNotification(String title , String text , Duration d , NotificationType t) {
 		
@@ -110,7 +138,7 @@ public final class ActionTool {
 	 * Makes a question to the user.
 	 *
 	 * @param text
-	 *        the text
+	 *            the text
 	 * @return true, if successful
 	 */
 	public static boolean doQuestion(String text , Stage window) {

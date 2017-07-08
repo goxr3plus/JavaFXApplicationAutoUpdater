@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import application.Main;
+import application.tools.ActionTool;
 import application.tools.InfoTool;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,7 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 
 public class DownloadModeController extends BorderPane {
@@ -29,10 +30,13 @@ public class DownloadModeController extends BorderPane {
 	private Label progressLabel;
 	
 	@FXML
-	private Region region;
+	private StackPane failedStackPane;
 	
 	@FXML
 	private Button tryAgainButton;
+	
+	@FXML
+	private Button downloadManually;
 	
 	// -------------------------------------------------------------
 	
@@ -63,15 +67,18 @@ public class DownloadModeController extends BorderPane {
 	@FXML
 	private void initialize() {
 		
-		//-- region
-		region.setVisible(false);
+		//-- failedStackPane
+		failedStackPane.setVisible(false);
 		
 		//-- tryAgainButton
-		tryAgainButton.visibleProperty().bind(region.visibleProperty());
 		tryAgainButton.setOnAction(a -> {
 			Main.restartApplication("XR3PlayerUpdater");
 			tryAgainButton.setDisable(true);
 		});
+		
+		//== Download Manually
+		downloadManually.setOnAction(a -> ActionTool.openWebSite("https://sourceforge.net/projects/xr3player/"));
+		
 	}
 	
 	public ProgressIndicator getProgressBar() {
@@ -83,10 +90,17 @@ public class DownloadModeController extends BorderPane {
 	}
 	
 	/**
-	 * @return the region
+	 * @return the failedStackPane
 	 */
-	public Region getRegion() {
-		return region;
+	public StackPane getFailedStackPane() {
+		return failedStackPane;
+	}
+	
+	/**
+	 * @return the downloadManually
+	 */
+	public Button getDownloadManually() {
+		return downloadManually;
 	}
 	
 }

@@ -195,7 +195,7 @@ public class Main extends Application {
 				downloadMode.getProgressLabel().textProperty().addListener((observable , oldValue , newValue) -> {
 					//Give try again option to the user
 					if (newValue.toLowerCase().contains("failed"))
-						downloadMode.getRegion().setVisible(true);
+						downloadMode.getFailedStackPane().setVisible(true);
 				});
 				downloadMode.getProgressBar().progressProperty().addListener(listener);
 				window.setTitle("Downloading ( " + this.applicationName + " ) Update -> " + this.update);
@@ -215,7 +215,7 @@ public class Main extends Application {
 			deleteZipFolder();
 			
 			//Give try again option to the user
-			downloadMode.getRegion().setVisible(true);
+			downloadMode.getFailedStackPane().setVisible(true);
 		}
 	}
 	
