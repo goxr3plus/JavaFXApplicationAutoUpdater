@@ -1,7 +1,7 @@
 /*
  * 
  */
-package application.services;
+package main.java.com.goxr3plus.XR3PlayerUpdater.services;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,11 +13,11 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-import application.tools.ActionTool;
-import application.tools.NotificationType;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.util.Duration;
+import main.java.com.goxr3plus.XR3PlayerUpdater.tools.ActionTool;
+import main.java.com.goxr3plus.XR3PlayerUpdater.tools.NotificationType;
 
 /**
  * This class is used to import an XR3Player database (as .zip folder)
