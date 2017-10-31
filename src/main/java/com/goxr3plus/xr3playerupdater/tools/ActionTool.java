@@ -1,7 +1,7 @@
 /*
  * 
  */
-package main.java.com.goxr3plus.XR3PlayerUpdater.tools;
+package main.java.com.goxr3plus.xr3playerupdater.tools;
 
 import java.awt.Desktop;
 import java.io.IOException;

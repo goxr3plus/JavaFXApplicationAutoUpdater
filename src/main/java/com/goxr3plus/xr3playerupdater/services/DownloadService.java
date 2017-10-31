@@ -1,7 +1,7 @@
 /**
  * 
  */
-package main.java.com.goxr3plus.XR3PlayerUpdater.services;
+package main.java.com.goxr3plus.xr3playerupdater.services;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +18,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import main.java.com.goxr3plus.XR3PlayerUpdater.tools.InfoTool;
+import main.java.com.goxr3plus.xr3playerupdater.tools.InfoTool;
 
 /**
  * JavaFX Service which is Capable of Downloading Files from the Internet to the LocalHost

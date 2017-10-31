@@ -1,7 +1,7 @@
 /*
  * 
  */
-package main.java.com.goxr3plus.XR3PlayerUpdater.services;
+package main.java.com.goxr3plus.xr3playerupdater.services;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,8 +16,8 @@ import java.util.zip.ZipInputStream;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.util.Duration;
-import main.java.com.goxr3plus.XR3PlayerUpdater.tools.ActionTool;
-import main.java.com.goxr3plus.XR3PlayerUpdater.tools.NotificationType;
+import main.java.com.goxr3plus.xr3playerupdater.tools.ActionTool;
+import main.java.com.goxr3plus.xr3playerupdater.tools.NotificationType;
 
 /**
  * This class is used to import an XR3Player database (as .zip folder)

@@ -7,9 +7,9 @@
 	<artifactId>XR3PlayerUpdater</artifactId>
 	<version>3.0.90</version>
 	<name>XR3PlayerUpdater</name>
-	
+
 	<!-- Output to jar format -->
-	<packaging>jar</packaging>
+	<!-- <packaging>jar</packaging> -->
 
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -18,7 +18,7 @@
 	</properties>
 
 	<build>
-		<finalName>XR3PlayerUpdater</finalName>
+		<!-- <finalName>XR3PlayerUpdater</finalName> -->
 		<sourceDirectory>src</sourceDirectory>
 		<resources>
 			<resource>
@@ -44,42 +44,50 @@
 				</configuration>
 			</plugin>
 
-			<!-- Make this jar executable -->
+			<!-- Maven Assembly Plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.0.2</version>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.1.0</version>
 				<configuration>
+					<!-- get all project dependencies -->
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<!--  Jar Final Name -->
+					<finalName>XR3PlayerUpdater</finalName>
+					<!-- MainClass in mainfest make a executable jar -->
 					<archive>
 						<manifest>
-							<addClasspath>true</addClasspath>
-							<mainClass>main.java.com.goxr3plus.xr3player.application.Main</mainClass>
-							<classpathPrefix>XR3PlayerUpdater_lib/</classpathPrefix>
+							<mainClass>main.java.com.goxr3plus.xr3playerupdater.application.Main</mainClass>
 						</manifest>
 					</archive>
+					<appendAssemblyId>false</appendAssemblyId>
 				</configuration>
-			</plugin>
-
-			<!-- Copy project dependency -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>3.0.2</version>
 				<executions>
 					<execution>
-						<id>copy-dependencies</id>
+						<id>make-assembly</id>
+						<!-- bind to the packaging phase -->
 						<phase>package</phase>
 						<goals>
-							<goal>copy-dependencies</goal>
+							<goal>single</goal>
 						</goals>
-						<configuration>
-							<!-- exclude junit, we need runtime dependency only -->
-							<excludeArtifactIds> junit </excludeArtifactIds>
-							<outputDirectory>${project.build.directory}/XR3PlayerUpdater_lib/</outputDirectory>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
+
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.0.2</version>
+				<executions>
+					<execution>
+						<id>default-jar</id>
+						<!-- put the default-jar in the none phase to skip it from being created -->
+						<phase>none</phase>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 	</build>
 

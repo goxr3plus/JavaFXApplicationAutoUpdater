@@ -1,7 +1,7 @@
 /*
  * 
  */
-package main.java.com.goxr3plus.XR3PlayerUpdater.tools;
+package main.java.com.goxr3plus.xr3playerupdater.tools;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -9,7 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javafx.scene.image.Image;
-import main.java.com.goxr3plus.XR3PlayerUpdater.application.Main;
+import main.java.com.goxr3plus.xr3playerupdater.application.Main;
 
 /**
  * Provides useful methods for retrieving informations.

@@ -1,4 +1,4 @@
-package main.java.com.goxr3plus.XR3PlayerUpdater.application;
+package main.java.com.goxr3plus.xr3playerupdater.application;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,12 +18,12 @@ import javafx.beans.value.ChangeListener;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import main.java.com.goxr3plus.XR3PlayerUpdater.presenter.DownloadModeController;
-import main.java.com.goxr3plus.XR3PlayerUpdater.services.DownloadService;
-import main.java.com.goxr3plus.XR3PlayerUpdater.services.ExportZipService;
-import main.java.com.goxr3plus.XR3PlayerUpdater.tools.ActionTool;
-import main.java.com.goxr3plus.XR3PlayerUpdater.tools.InfoTool;
-import main.java.com.goxr3plus.XR3PlayerUpdater.tools.NotificationType;
+import main.java.com.goxr3plus.xr3playerupdater.presenter.DownloadModeController;
+import main.java.com.goxr3plus.xr3playerupdater.services.DownloadService;
+import main.java.com.goxr3plus.xr3playerupdater.services.ExportZipService;
+import main.java.com.goxr3plus.xr3playerupdater.tools.ActionTool;
+import main.java.com.goxr3plus.xr3playerupdater.tools.InfoTool;
+import main.java.com.goxr3plus.xr3playerupdater.tools.NotificationType;
 
 public class Main extends Application {
 	
