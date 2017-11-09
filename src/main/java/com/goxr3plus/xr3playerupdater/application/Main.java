@@ -29,11 +29,15 @@ public class Main extends Application {
 	
 	//================Variables================
 	
-	/** This is the folder where the update will take place [ obviously the parent folder of the application] */
+	/**
+	 * This is the folder where the update will take place [ obviously the
+	 * parent folder of the application]
+	 */
 	private File updateFolder = new File(InfoTool.getBasePathForClass(Main.class));
 	
 	/**
-	 * Download update as a ZIP Folder , this is the prefix name of the ZIP folder
+	 * Download update as a ZIP Folder , this is the prefix name of the ZIP
+	 * folder
 	 */
 	private static String foldersNamePrefix;
 	
@@ -156,14 +160,18 @@ public class Main extends Application {
 		}
 	}
 	
-	/** In order to update this application must have READ,WRITE AND CREATE permissions on the current folder */
+	/**
+	 * In order to update this application must have READ,WRITE AND CREATE
+	 * permissions on the current folder
+	 */
 	public boolean checkPermissions() {
 		
 		//Check for permission to Create
 		try {
 			File sample = new File(updateFolder.getAbsolutePath() + File.separator + "empty123123124122354345436.txt");
 			/*
-			 * Create and delete a dummy file in order to check file permissions. Maybe there is a safer way for this check.
+			 * Create and delete a dummy file in order to check file
+			 * permissions. Maybe there is a safer way for this check.
 			 */
 			sample.createNewFile();
 			sample.delete();
@@ -238,7 +246,10 @@ public class Main extends Application {
 		
 	}
 	
-	/** After the exporting has been done i must delete the old update files and add the new ones */
+	/**
+	 * After the exporting has been done i must delete the old update files and
+	 * add the new ones
+	 */
 	private void packageUpdate() {
 		
 		//Remove Listeners
@@ -307,7 +318,9 @@ public class Main extends Application {
 					while ( ( line = bufferedReader.readLine() ) != null) {
 						if (line.isEmpty())
 							break;
-						if (line.contains(appName + " Application Started"))
+						//This line is being printed when XR3Player Starts 
+						//So the AutoUpdater knows that it must exit
+						else if (line.contains("Entered JavaFX Application Start Method"))
 							System.exit(0);
 					}
 				
