@@ -283,7 +283,7 @@ public class Main extends Application {
 			
 			//Show message that application is restarting
 			Platform.runLater(() -> ActionTool.showNotification("Starting " + appName,
-					"Application Path:[ " + applicationPath[0] + " ]\n\tIf this takes more than 10 seconds either the computer is slow or it has failed....", Duration.seconds(25),
+					"Application Path:[ " + applicationPath[0] + " ]\n\tIf this takes more than [20] seconds either the computer is slow or it has failed....", Duration.seconds(25),
 					NotificationType.INFORMATION));
 			
 			try {
@@ -320,7 +320,7 @@ public class Main extends Application {
 							break;
 						//This line is being printed when XR3Player Starts 
 						//So the AutoUpdater knows that it must exit
-						else if (line.contains("Entered JavaFX Application Start Method"))
+						else if (line.contains("XR3Player ready to rock!"))
 							System.exit(0);
 					}
 				
